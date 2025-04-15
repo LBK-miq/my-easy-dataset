@@ -86,10 +86,10 @@ export async function POST(request, { params }) {
       answerPrompt
     });
 
-    console.log('开始调用大模型：', id)
+    //console.log('开始调用大模型：', id)
     // 调用大模型生成答案
     const { answer, cot } = await llmClient.getResponseWithCOT(prompt);
-    console.log('获得大模型响应：', id)
+    //console.log('获得大模型响应：', id)
 
     // 获取现有数据集
     const datasets = await getDatasets(projectId);
