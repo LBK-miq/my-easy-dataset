@@ -319,6 +319,8 @@ export default function QuestionsPage({ params }) {
   };
 
   const handleBatchGenerateAnswers = async () => {
+    var t1 = Date.now();
+    console.log("开始生成数据集，毫秒数：", t1)
     if (selectedQuestions.length === 0) {
       setSnackbar({
         open: true,
@@ -481,6 +483,9 @@ export default function QuestionsPage({ params }) {
           severity: 'success'
         });
       }
+      var t2 = Date.now();
+      console.log("结束生成数据集，毫秒数：", t2)
+      console.log("生成问题共计用时（毫秒）：", (t2 - t1))
     } catch (error) {
       console.error('生成数据集出错:', error);
       setSnackbar({

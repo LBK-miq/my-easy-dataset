@@ -33,40 +33,42 @@ export async function POST(request, { params }) {
     const { globalPrompt, domainTreePrompt } = project;
 
     // 分割文本
-    const result = await splitProjectFile(projectId, fileName);
+    const result = await splitProjectFile(projectId, fileName, model);
 
-    const { toc } = result;
-    const llmClient = new LLMClient({
-      provider: model.provider,
-      endpoint: model.endpoint,
-      apiKey: model.apiKey,
-      model: model.name,
-      temperature: model.temperature,
-      maxTokens: model.maxTokens
-    });
+    // const { toc } = result;
+    // const llmClient = new LLMClient({
+    //   provider: model.provider,
+    //   endpoint: model.endpoint,
+    //   apiKey: model.apiKey,
+    //   model: model.name,
+    //   temperature: model.temperature,
+    //   maxTokens: model.maxTokens
+    // });
+    // console.log('try to skip domain tree building')
+    const tags = []
     // 生成领域树
-    console.log(projectId, fileName, 'Text split completed, starting to build domain tree');
-    const promptFunc = language === 'en' ? getLabelEnPrompt : getLabelPrompt;
-    const prompt = promptFunc({ text: toc, globalPrompt, domainTreePrompt });
-    const response = await llmClient.getResponse(prompt);
-    const tags = extractJsonFromLLMOutput(response);
+    // console.log(projectId, fileName, 'Text split completed, starting to build domain tree');
+    // const promptFunc = language === 'en' ? getLabelEnPrompt : getLabelPrompt;
+    // const prompt = promptFunc({ text: toc, globalPrompt, domainTreePrompt });
+    // const response = await llmClient.getResponse(prompt);
+    // const tags = extractJsonFromLLMOutput(response);
 
-    if (!response || !tags) {
-      // 删除前面生成的文件
-      await deleteFile(projectId, fileName);
-      const uploadedFiles = project.uploadedFiles || [];
-      const updatedFiles = uploadedFiles.filter(f => f !== fileName);
-      await updateProject(projectId, {
-        ...project,
-        uploadedFiles: updatedFiles
-      });
-      return NextResponse.json(
-        { error: 'AI analysis failed, please check model configuration, delete file and retry!' },
-        { status: 400 }
-      );
-    }
-    console.log(projectId, fileName, 'Domain tree built:', tags);
-    await saveTags(projectId, tags);
+    // if (!response || !tags) {
+    //   // 删除前面生成的文件
+    //   await deleteFile(projectId, fileName);
+    //   const uploadedFiles = project.uploadedFiles || [];
+    //   const updatedFiles = uploadedFiles.filter(f => f !== fileName);
+    //   await updateProject(projectId, {
+    //     ...project,
+    //     uploadedFiles: updatedFiles
+    //   });
+    //   return NextResponse.json(
+    //     { error: 'AI analysis failed, please check model configuration, delete file and retry!' },
+    //     { status: 400 }
+    //   );
+    // }
+    // console.log(projectId, fileName, 'Domain tree built:', tags);
+    // await saveTags(projectId, tags);
 
     return NextResponse.json({ ...result, tags });
   } catch (error) {

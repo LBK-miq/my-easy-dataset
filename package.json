@@ -41,13 +41,13 @@
     "outputPath": "dist"
   },
   "dependencies": {
-    "@emotion/react": "^11.11.3",
-    "@emotion/styled": "^11.11.0",
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.0",
     "@fontsource/inter": "^5.0.16",
     "@fontsource/jetbrains-mono": "^5.0.18",
-    "@mui/icons-material": "5.16.14",
+    "@mui/icons-material": "^5.17.1",
     "@mui/lab": "5.0.0-alpha.175",
-    "@mui/material": "5.16.14",
+    "@mui/material": "^5.17.1",
     "@opendocsg/pdf2md": "^0.2.1",
     "adm-zip": "^0.5.16",
     "electron-updater": "^6.3.9",
@@ -63,6 +63,7 @@
     "react-dom": "^18.2.0",
     "react-i18next": "^15.4.1",
     "react-markdown": "^10.0.1",
+    "request": "^2.88.2",
     "uuid": "^11.1.0"
   },
   "license": "Apache-2.0",

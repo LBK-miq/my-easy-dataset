@@ -239,6 +239,8 @@ export default function TextSplitPage({ params }) {
   // 处理生成问题
   const handleGenerateQuestions = async chunkIds => {
     try {
+      var t1 = Date.now();
+      console.log("开始生成问题，毫秒数：", t1)
       setProcessing(true);
       setError(null);
 
@@ -392,6 +394,9 @@ export default function TextSplitPage({ params }) {
 
       // 刷新文本块列表
       fetchChunks();
+      var t2 = Date.now();
+      console.log("结束生成问题，毫秒数：", t2)
+      console.log("生成问题共计用时（毫秒）：", (t2 - t1))
     } catch (error) {
       console.error(t('textSplit.generateQuestionsError'), error);
       setError({ severity: 'error', message: error.message });

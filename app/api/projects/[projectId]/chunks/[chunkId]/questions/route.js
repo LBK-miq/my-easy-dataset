@@ -71,15 +71,22 @@ export async function POST(request, { params }) {
       return NextResponse.json({ error: 'Failed to generate questions' }, { status: 500 });
     }
 
-    // 打标签
-    const tags = await getTags(projectId);
-    // 根据语言选择相应的标签提示词函数
-    const labelPromptFunc = language === 'en' ? getAddLabelEnPrompt : getAddLabelPrompt;
-    const labelPrompt = labelPromptFunc(JSON.stringify(tags), JSON.stringify(questions));
-    const labelResponse = await llmClient.getResponse(labelPrompt);
-    // 从LLM输出中提取JSON格式的问题列表
-    const labelQuestions = extractJsonFromLLMOutput(labelResponse);
-    console.log(projectId, chunkId, 'Label Questions：', labelQuestions);
+    //  领域树被取消，直接赋予标签
+    var i = 0;
+    var labelQuestions = new Array();
+    for (; i < questions.length; i++) {
+      labelQuestions[i] = {"question": questions[i], "label": "其他"};
+    }
+
+    // // 打标签
+    // const tags = await getTags(projectId);
+    // // 根据语言选择相应的标签提示词函数
+    // const labelPromptFunc = language === 'en' ? getAddLabelEnPrompt : getAddLabelPrompt;
+    // const labelPrompt = labelPromptFunc(JSON.stringify(tags), JSON.stringify(questions));
+    // const labelResponse = await llmClient.getResponse(labelPrompt);
+    // // 从LLM输出中提取JSON格式的问题列表
+    // const labelQuestions = extractJsonFromLLMOutput(labelResponse);
+    // console.log(projectId, chunkId, 'Label Questions：', labelQuestions);
 
     // 保存问题到数据库
     await addQuestionsForChunk(projectId, chunkId, labelQuestions);
