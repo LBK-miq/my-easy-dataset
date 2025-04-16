@@ -24,6 +24,8 @@ export default function ChunkList({
   chunks = [],
   onDelete,
   onGenerateQuestions,
+  onGenerateDetailQuestions,
+  onGenerateGeneralQuestions,
   loading = false,
   questionFilter,
   onQuestionFilterChange
@@ -108,6 +110,18 @@ export default function ChunkList({
     }
   };
 
+  const handleBatchGenerateDetailQuestions = () => {
+    if (onGenerateDetailQuestions && selectedChunks.length > 0) {
+      onGenerateDetailQuestions(selectedChunks);
+    }
+  };
+
+  const handleBatchGenerateGeneralQuestions = () => {
+    if (onGenerateGeneralQuestions && selectedChunks.length > 0) {
+      onGenerateGeneralQuestions(selectedChunks);
+    }
+  };
+
   if (loading) {
     return (
       <Box sx={{ display: 'flex', justifyContent: 'center', p: 4 }}>
@@ -122,7 +136,8 @@ export default function ChunkList({
         totalChunks={chunks.length}
         selectedChunks={selectedChunks}
         onSelectAll={handleSelectAll}
-        onBatchGenerateQuestions={handleBatchGenerateQuestions}
+        onBatchGenerateDetailQuestions={handleBatchGenerateDetailQuestions}
+        onBatchGenerateGeneralQuestions={handleBatchGenerateGeneralQuestions}
         questionFilter={questionFilter}
         onQuestionFilterChange={event => onQuestionFilterChange(event.target.value)}
       />
@@ -137,6 +152,8 @@ export default function ChunkList({
               onView={() => handleViewChunk(chunk.id)}
               onDelete={() => handleOpenDeleteDialog(chunk.id)}
               onGenerateQuestions={() => onGenerateQuestions && onGenerateQuestions([chunk.id])}
+              onGenerateDetailQuestions={() => onGenerateDetailQuestions && onGenerateDetailQuestions([chunk.id])}
+              onGenerateGeneralQuestions={() => onGenerateGeneralQuestions && onGenerateGeneralQuestions([chunk.id])}
             />
           </Grid>
         ))}

@@ -7,7 +7,7 @@ import QuizIcon from '@mui/icons-material/Quiz';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'react-i18next';
 
-export default function ChunkCard({ chunk, selected, onSelect, onView, onDelete, onGenerateQuestions }) {
+export default function ChunkCard({ chunk, selected, onSelect, onView, onDelete, onGenerateGeneralQuestions, onGenerateDetailQuestions }) {
   const theme = useTheme();
   const { t } = useTranslation();
 
@@ -164,13 +164,26 @@ export default function ChunkCard({ chunk, selected, onSelect, onView, onDelete,
           </IconButton>
         </Tooltip>
 
-        <Tooltip title={t('textSplit.generateQuestions')}>
+        <Tooltip title={t('textSplit.generateDetailQuestions')}>
           <IconButton
             size="small"
             color="info"
-            onClick={onGenerateQuestions}
+            onClick={onGenerateDetailQuestions}
             sx={{
-              bgcolor: theme.palette.mode === 'dark' ? 'rgba(41, 182, 246, 0.08)' : 'rgba(2, 136, 209, 0.08)'
+              bgcolor: theme.palette.mode === 'dark' ? 'rgba(41, 182, 246, 0.2)' : 'rgba(2, 136, 209, 0.2)'
+            }}
+          >
+            <QuizIcon fontSize="small" />
+          </IconButton>
+        </Tooltip>
+
+        <Tooltip title={t('textSplit.generateGeneralQuestions')}>
+          <IconButton
+            size="small"
+            color="info"
+            onClick={onGenerateGeneralQuestions}
+            sx={{
+              bgcolor: theme.palette.mode === 'dark' ? 'rgba(255, 241, 46, 0.2)' : 'rgba(255, 241, 46, 0.2)'
             }}
           >
             <QuizIcon fontSize="small" />

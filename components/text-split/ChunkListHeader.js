@@ -8,7 +8,8 @@ export default function ChunkListHeader({
   totalChunks,
   selectedChunks,
   onSelectAll,
-  onBatchGenerateQuestions,
+  onBatchGenerateDetailQuestions,
+  onBatchGenerateGeneralQuestions,
   questionFilter,
   onQuestionFilterChange
 }) {
@@ -39,9 +40,19 @@ export default function ChunkListHeader({
           color="primary"
           startIcon={<QuizIcon />}
           disabled={selectedChunks.length === 0}
-          onClick={onBatchGenerateQuestions}
+          onClick={onBatchGenerateDetailQuestions}
         >
-          {t('textSplit.batchGenerateQuestions')}
+          {t('textSplit.batchGenerateDetailQuestions')}
+        </Button>
+
+        <Button
+          variant="contained"
+          color="primary"
+          startIcon={<QuizIcon />}
+          disabled={selectedChunks.length === 0}
+          onClick={onBatchGenerateGeneralQuestions}
+        >
+          {t('textSplit.batchGenerateGeneralQuestions')}
         </Button>
       </Box>
     </Box>

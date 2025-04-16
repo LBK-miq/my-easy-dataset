@@ -5,6 +5,7 @@ import getQuestionPrompt from '@/lib/llm/prompts/question';
 import getQuestionEnPrompt from '@/lib/llm/prompts/questionEn';
 import getAddLabelPrompt from '@/lib/llm/prompts/addLabel';
 import getAddLabelEnPrompt from '@/lib/llm/prompts/addLabelEn';
+import { getDetailQuestionPrompt, getGeneralQuestionPrompt } from '@/lib/llm/prompts/questionType';
 import { addQuestionsForChunk, getQuestionsForChunk } from '@/lib/db/questions';
 import { extractJsonFromLLMOutput } from '@/lib/llm/common/util';
 import { getTaskConfig, getProject } from '@/lib/db/projects';
@@ -24,7 +25,7 @@ export async function POST(request, { params }) {
     const chunkId = decodeURIComponent(c);
 
     // 获取请求体
-    const { model, language = '中文', number } = await request.json();
+    const { model, language = '中文', number, type } = await request.json();
 
     if (!model) {
       return NextResponse.json({ error: 'Model cannot be empty' }, { status: 400 });
@@ -56,7 +57,9 @@ export async function POST(request, { params }) {
     const questionNumber = number || Math.floor(chunk.content.length / questionGenerationLength);
 
     // 根据语言选择相应的提示词函数
-    const promptFunc = language === 'en' ? getQuestionEnPrompt : getQuestionPrompt;
+    const promptFunc = type === 'general'? getGeneralQuestionPrompt :
+                        type === 'detail'? getDetailQuestionPrompt :
+                        language === 'en' ? getQuestionEnPrompt : getQuestionPrompt;
     // 生成问题
     const prompt = promptFunc({ text: chunk.content, number: questionNumber, language, globalPrompt, questionPrompt });
 
@@ -72,10 +75,10 @@ export async function POST(request, { params }) {
     }
 
     //  领域树被取消，直接赋予标签
-    var i = 0;
-    var labelQuestions = new Array();
-    for (; i < questions.length; i++) {
-      labelQuestions[i] = {"question": questions[i], "label": "其他"};
+    const label = type === 'general'? '粗粒度问题' : (type === 'detail'? '细粒度问题' : '其他')
+    var labelQuestions = [];
+    for (let i = 0; i < questions.length; i++) {
+      labelQuestions[i] = {"question": questions[i], "label": label};
     }
 
     // // 打标签

@@ -45,7 +45,7 @@ export async function POST(request, { params }) {
     //   maxTokens: model.maxTokens
     // });
     // console.log('try to skip domain tree building')
-    const tags = []
+    const tags = [{label: "粗粒度问题"}, {label: "细粒度问题"}]
     // 生成领域树
     // console.log(projectId, fileName, 'Text split completed, starting to build domain tree');
     // const promptFunc = language === 'en' ? getLabelEnPrompt : getLabelPrompt;
