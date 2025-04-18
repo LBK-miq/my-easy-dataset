@@ -112,13 +112,13 @@ export default function ChunkList({
 
   const handleBatchGenerateDetailQuestions = () => {
     if (onGenerateDetailQuestions && selectedChunks.length > 0) {
-      onGenerateDetailQuestions(selectedChunks);
+      onGenerateQuestions(selectedChunks, 'detail');
     }
   };
 
   const handleBatchGenerateGeneralQuestions = () => {
     if (onGenerateGeneralQuestions && selectedChunks.length > 0) {
-      onGenerateGeneralQuestions(selectedChunks);
+      onGenerateQuestions(selectedChunks, 'general');
     }
   };
 
@@ -151,9 +151,9 @@ export default function ChunkList({
               onSelect={() => handleSelectChunk(chunk.id)}
               onView={() => handleViewChunk(chunk.id)}
               onDelete={() => handleOpenDeleteDialog(chunk.id)}
-              onGenerateQuestions={() => onGenerateQuestions && onGenerateQuestions([chunk.id])}
-              onGenerateDetailQuestions={() => onGenerateDetailQuestions && onGenerateDetailQuestions([chunk.id])}
-              onGenerateGeneralQuestions={() => onGenerateGeneralQuestions && onGenerateGeneralQuestions([chunk.id])}
+              onGenerateQuestions={() => onGenerateQuestions && onGenerateQuestions([chunk.id], '')}
+              onGenerateDetailQuestions={() => onGenerateDetailQuestions && onGenerateDetailQuestions([chunk.id], 'detail')}
+              onGenerateGeneralQuestions={() => onGenerateGeneralQuestions && onGenerateGeneralQuestions([chunk.id], 'general')}
             />
           </Grid>
         ))}
