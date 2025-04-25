@@ -32,6 +32,7 @@ export async function POST(request, { params }) {
     }
 
     // 获取文本块内容
+    // 该项目中文本块保存的content里面有Abstract信息（可见于local-db中项目文件夹下chunks目录中的一系列txt内），不需要另外处理提取，在Prompt中告知即可
     const chunk = await getTextChunk(projectId, chunkId);
     if (!chunk) {
       return NextResponse.json({ error: 'Text block does not exist' }, { status: 404 });
@@ -62,7 +63,6 @@ export async function POST(request, { params }) {
                         language === 'en' ? getQuestionEnPrompt : getQuestionPrompt;
     // 生成问题
     const prompt = promptFunc({ text: chunk.content, number: questionNumber, language, globalPrompt, questionPrompt });
-
     const response = await llmClient.getResponse(prompt);
 
     // 从LLM输出中提取JSON格式的问题列表

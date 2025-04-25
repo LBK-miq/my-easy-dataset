@@ -92,13 +92,14 @@ export async function POST(request, { params }) {
     const response = extractJsonFromLLMOutput(answer);
     console.log(response)
     const resourceSplit = chunk.path.split("\\");
-    const resourceFileName = resourceSplit[resourceSplit.length - 1]
-    const resourceFile = resourceFileName.substring(0, resourceFileName.length - 4)
-    var resourceString = `源文本块：${resourceFile}\n源文本：\n`
+    const resourceFileName = resourceSplit[resourceSplit.length - 1];
+    const resourceFile = resourceFileName.split('-part-')[0];
+    const answerString = `${response.answer}\n源文件：《${resourceFile}》`;
+    var resourceString = `源文件：${resourceFile}\n源文本：\n`;
     for (let i = 0; i < response.resource.length; i++) {
-      resourceString += `${i + 1}. ${response.resource[i]}\n`
+      resourceString += `[${i + 1}] ${response.resource[i]}\n`;
     }
-    resourceString = resourceString.substring(0, resourceString.length - 1)
+    resourceString = resourceString.substring(0, resourceString.length - 1);
 
     // 获取现有数据集
     const datasets = await getDatasets(projectId);
@@ -109,7 +110,7 @@ export async function POST(request, { params }) {
     const datasetItem = {
       id: datasetId,
       question: question.question,
-      answer: response.answer,
+      answer: answerString,
       resource: resourceString,
       chunkId: chunkId,
       model: model.name,
