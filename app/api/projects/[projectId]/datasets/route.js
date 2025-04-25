@@ -9,6 +9,7 @@ import getOptimizeCotPrompt from '@/lib/llm/prompts/optimizeCot';
 import getOptimizeCotEnPrompt from '@/lib/llm/prompts/optimizeCotEn';
 
 const LLMClient = require('@/lib/llm/core');
+const { extractJsonFromLLMOutput } = require('@/lib/llm/common/util');
 
 async function optimizeCot(originalQuestion, answer, originalCot, language, llmClient, id, projectId) {
   const prompt =
@@ -86,10 +87,18 @@ export async function POST(request, { params }) {
       answerPrompt
     });
 
-    //console.log('开始调用大模型：', id)
-    // 调用大模型生成答案
+    // 调用大模型生成答案，并指出其来源
     const { answer, cot } = await llmClient.getResponseWithCOT(prompt);
-    //console.log('获得大模型响应：', id)
+    const response = extractJsonFromLLMOutput(answer);
+    console.log(response)
+    const resourceSplit = chunk.path.split("\\");
+    const resourceFileName = resourceSplit[resourceSplit.length - 1]
+    const resourceFile = resourceFileName.substring(0, resourceFileName.length - 4)
+    var resourceString = `源文本块：${resourceFile}\n源文本：\n`
+    for (let i = 0; i < response.resource.length; i++) {
+      resourceString += `${i + 1}. ${response.resource[i]}\n`
+    }
+    resourceString = resourceString.substring(0, resourceString.length - 1)
 
     // 获取现有数据集
     const datasets = await getDatasets(projectId);
@@ -100,7 +109,8 @@ export async function POST(request, { params }) {
     const datasetItem = {
       id: datasetId,
       question: question.question,
-      answer: answer,
+      answer: response.answer,
+      resource: resourceString,
       chunkId: chunkId,
       model: model.name,
       createdAt: new Date().toISOString(),
@@ -109,7 +119,7 @@ export async function POST(request, { params }) {
 
     if (cot) {
       // 为了性能考虑，这里异步优化
-      optimizeCot(question.question, answer, cot, language, llmClient, datasetId, projectId);
+      optimizeCot(question.question, response.answer, cot, language, llmClient, datasetId, projectId);
     }
 
     // 添加到数据集
@@ -236,7 +246,7 @@ export async function PATCH(request, { params }) {
     const { projectId } = params;
     const { searchParams } = new URL(request.url);
     const datasetId = searchParams.get('id');
-    const { answer, cot, confirmed } = await request.json();
+    const { answer, cot, resource, confirmed } = await request.json();
 
     // 验证参数
     if (!projectId) {
@@ -276,6 +286,7 @@ export async function PATCH(request, { params }) {
     const dataset = datasets[datasetIndex];
     if (answer !== undefined) dataset.answer = answer;
     if (cot !== undefined) dataset.cot = cot;
+    if (resource !== undefined) dataset.resource = resource;
     if (confirmed !== undefined) dataset.confirmed = confirmed;
 
     // 保存更新后的数据集列表

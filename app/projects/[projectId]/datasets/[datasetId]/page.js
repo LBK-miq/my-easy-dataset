@@ -140,8 +140,10 @@ export default function DatasetDetailsPage({ params }) {
   const [loading, setLoading] = useState(true);
   const [editingAnswer, setEditingAnswer] = useState(false);
   const [editingCot, setEditingCot] = useState(false);
+  const [editingResource, setEditingResource] = useState(false);
   const [answerValue, setAnswerValue] = useState('');
   const [cotValue, setCotValue] = useState('');
+  const [resourceValue, setResourceValue] = useState('');
   const [snackbar, setSnackbar] = useState({
     open: false,
     message: '',
@@ -197,6 +199,7 @@ export default function DatasetDetailsPage({ params }) {
         setDataset(currentDataset);
         setAnswerValue(currentDataset.answer);
         setCotValue(currentDataset.cot || '');
+        setResourceValue(currentDataset.resource || '');
       }
     } catch (error) {
       setSnackbar({
@@ -490,7 +493,7 @@ export default function DatasetDetailsPage({ params }) {
 
       {/* 主要内容 */}
       <Paper sx={{ p: 3 }}>
-        <Box sx={{ mb: 3 }}>
+        <Box sx={{ mb: 4 }}>
           <Typography variant="subtitle1" color="text.secondary" sx={{ mb: 1 }}>
             {t('datasets.question')}
           </Typography>
@@ -523,6 +526,19 @@ export default function DatasetDetailsPage({ params }) {
           onCancel={() => {
             setEditingCot(false);
             setCotValue(dataset.cot || '');
+          }}
+        />
+
+        <EditableField
+          label={t('datasets.resource')}
+          value={resourceValue}
+          editing={editingResource}
+          onEdit={() => setEditingResource(true)}
+          onChange={e => setResourceValue(e.target.value)}
+          onSave={() => handleSave('resource', resourceValue)}
+          onCancel={() => {
+            setEditingResource(false);
+            setResourceValue(dataset.resource || '');
           }}
         />
 
